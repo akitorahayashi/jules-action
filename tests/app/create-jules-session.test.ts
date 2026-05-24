@@ -31,6 +31,8 @@ describe('createJulesSession', () => {
         prompt: 'Create tests',
         source: 'sources/github/acme/repo',
         startingBranch: 'release',
+        requirePlanApproval: true,
+        automationMode: 'AUTO_CREATE_PR',
       },
       {
         createClient: () => ({ createSession, listSources }),
@@ -57,8 +59,8 @@ describe('createJulesSession', () => {
         },
       },
       title: undefined,
-      requirePlanApproval: undefined,
-      automationMode: undefined,
+      requirePlanApproval: true,
+      automationMode: 'AUTO_CREATE_PR',
     });
     expect(session).toEqual(
       buildSession('sources/github/acme/repo', 'release'),
@@ -76,6 +78,8 @@ describe('createJulesSession', () => {
       {
         apiKey: 'key-123',
         prompt: 'Create tests',
+        requirePlanApproval: true,
+        automationMode: 'AUTO_CREATE_PR',
       },
       {
         createClient: () => ({ createSession, listSources }),
@@ -101,8 +105,8 @@ describe('createJulesSession', () => {
         },
       },
       title: undefined,
-      requirePlanApproval: undefined,
-      automationMode: undefined,
+      requirePlanApproval: true,
+      automationMode: 'AUTO_CREATE_PR',
     });
   });
 });

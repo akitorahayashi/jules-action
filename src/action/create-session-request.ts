@@ -16,8 +16,8 @@ const createSessionActionRequestSchema = z.object({
   source: sourceNameSchema.optional(),
   startingBranch: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
-  requirePlanApproval: z.boolean().optional(),
-  automationMode: automationModeSchema.optional(),
+  requirePlanApproval: z.boolean(),
+  automationMode: automationModeSchema,
 });
 
 export type CreateSessionActionRequest = z.infer<
@@ -36,8 +36,9 @@ export function resolveCreateSessionActionRequest(): CreateSessionActionRequest 
     source: readOptionalInput('source'),
     startingBranch: readOptionalInput('starting-branch'),
     title: readOptionalInput('title'),
-    requirePlanApproval: readOptionalBooleanInput('require-plan-approval'),
-    automationMode: readOptionalAutomationMode(),
+    requirePlanApproval:
+      readOptionalBooleanInput('require-plan-approval') ?? true,
+    automationMode: readOptionalAutomationMode() ?? 'AUTO_CREATE_PR',
   };
 
   const parsedRequest = createSessionActionRequestSchema.safeParse(request);

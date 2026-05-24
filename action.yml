@@ -16,9 +16,11 @@ inputs:
   require-plan-approval:
     description: Optional boolean; true requires plan approval before execution
     required: false
+    default: "true"
   automation-mode:
     description: Optional automation mode enum (AUTOMATION_MODE_UNSPECIFIED or AUTO_CREATE_PR)
     required: false
+    default: AUTO_CREATE_PR
 outputs:
   session-name:
     description: Created session resource name

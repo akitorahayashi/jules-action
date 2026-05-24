@@ -8,7 +8,7 @@ interface ActionFile {
     using: string;
     main: string;
   };
-  inputs: Record<string, { required?: boolean }>;
+  inputs: Record<string, { required?: boolean; default?: string }>;
   outputs: Record<string, unknown>;
 }
 
@@ -28,7 +28,9 @@ describe('action metadata contracts', () => {
     expect(action.inputs.source.required).toBe(false);
     expect(action.inputs['starting-branch'].required).toBe(false);
     expect(action.inputs['require-plan-approval'].required).toBe(false);
+    expect(action.inputs['require-plan-approval'].default).toBe('true');
     expect(action.inputs['automation-mode'].required).toBe(false);
+    expect(action.inputs['automation-mode'].default).toBe('AUTO_CREATE_PR');
     expect(Object.keys(action.outputs)).toContain('session-name');
     expect(Object.keys(action.outputs)).toContain('session-id');
     expect(Object.keys(action.outputs)).toContain('resolved-source');

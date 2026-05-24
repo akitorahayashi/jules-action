@@ -43,6 +43,11 @@ This form resolves source and branch from workflow context and emits the created
 
 If branch cannot be resolved, the action fails explicitly.
 
+## Session Defaults
+
+- `require-plan-approval` defaults to `true` when omitted.
+- `automation-mode` defaults to `AUTO_CREATE_PR` when omitted.
+
 ## Authentication
 
 - The action reads the API key from `JULES_API_KEY`.

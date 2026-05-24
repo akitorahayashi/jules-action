@@ -58,6 +58,26 @@ describe('resolveCreateSessionActionRequest', () => {
     });
   });
 
+  it('applies explicit defaults when optional settings are omitted', () => {
+    process.env.JULES_API_KEY = 'key-123';
+    mockedGetInput.mockImplementation((name: string) => {
+      if (name === 'prompt') {
+        return 'add tests';
+      }
+      return '';
+    });
+
+    expect(resolveCreateSessionActionRequest()).toEqual({
+      apiKey: 'key-123',
+      prompt: 'add tests',
+      source: undefined,
+      startingBranch: undefined,
+      title: undefined,
+      requirePlanApproval: true,
+      automationMode: 'AUTO_CREATE_PR',
+    });
+  });
+
   it('fails when require-plan-approval is not a boolean', () => {
     process.env.JULES_API_KEY = 'key-123';
     mockedGetInput.mockImplementation((name: string) => {
