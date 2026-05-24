@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import {
-  type AutomationMode,
   automationModeInputSchema,
   sourceNameSchema,
 } from '../jules-api/session-contract';
@@ -25,11 +24,6 @@ export type CreateSessionActionRequest = z.infer<
   typeof createSessionActionRequestSchema
 >;
 
-function readOptionalAutomationMode(): AutomationMode | undefined {
-  const automationMode = readOptionalInput('automation-mode');
-  return automationMode as AutomationMode | undefined;
-}
-
 export function resolveCreateSessionActionRequest(): CreateSessionActionRequest {
   const request = {
     apiKey: readRequiredEnvironmentVariable('JULES_API_KEY'),
@@ -39,7 +33,7 @@ export function resolveCreateSessionActionRequest(): CreateSessionActionRequest 
     title: readOptionalInput('title'),
     requirePlanApproval:
       readOptionalBooleanInput('require-plan-approval') ?? true,
-    automationMode: readOptionalAutomationMode() ?? 'AUTO_CREATE_PR',
+    automationMode: readOptionalInput('automation-mode') ?? 'AUTO_CREATE_PR',
   };
 
   const parsedRequest = createSessionActionRequestSchema.safeParse(request);
