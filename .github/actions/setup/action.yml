@@ -1,0 +1,30 @@
+name: Setup Node Environment
+description: Install Node.js and pnpm dependencies
+
+inputs:
+  node-version-file:
+    description: Node.js version file path
+    required: false
+    default: .nvmrc
+  args:
+    description: Arguments passed to `pnpm install`
+    required: false
+    default: '--frozen-lockfile'
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v6
+      with:
+        cache: false
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version-file: ${{ inputs.node-version-file }}
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: pnpm install ${{ inputs.args }}
+      shell: bash
