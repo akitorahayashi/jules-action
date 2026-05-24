@@ -1,42 +1,57 @@
 # Usage
 
-`act-tmpl` renders a final message string from action inputs.
+`jules-action` creates a Jules session by calling `sources.list` and `sessions.create`.
 
 ## Standard Workflow Usage
 
 ```yaml
-- uses: akitorahayashi/act-tmpl@v1
+- uses: akitorahayashi/jules-action@v1
+  env:
+    JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
   with:
-    message: hello world
+    prompt: Create integration tests for the webhook module
 ```
 
-This default form emits `hello world` as `rendered-message`.
+This form resolves source and branch from workflow context and emits the created session metadata.
 
-## Input Behavior
-
-The action reads:
-
-- required `message`
-- optional `prefix`
-- optional `suffix`
-- optional `uppercase`
-
-The output surface is:
-
-- `rendered-message`
-
-## Rendering Example
+## Explicit Source and Branch
 
 ```yaml
-- uses: akitorahayashi/act-tmpl@v1
+- uses: akitorahayashi/jules-action@v1
+  env:
+    JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
   with:
-    message: world
-    prefix: hello
-    suffix: again
-    uppercase: true
+    prompt: Improve release workflow error handling
+    source: sources/github/acme/service-api
+    starting-branch: main
+    title: Improve release workflow
+    require-plan-approval: true
+    automation-mode: AUTO_CREATE_PR
 ```
 
-The emitted output in this example is `HELLO WORLD AGAIN`.
+## Source Resolution
+
+- When `source` is set, the action verifies it through `sources.list` and requires one exact match.
+- When `source` is omitted, the action derives `sources/github/{owner}/{repo}` from `GITHUB_REPOSITORY`, verifies it through `sources.list`, and fails when no exact match is found.
+
+## Branch Resolution
+
+- When `starting-branch` is set, the action uses it directly.
+- When `starting-branch` is omitted, the action resolves branch in this order:
+  - `GITHUB_HEAD_REF`
+  - `GITHUB_REF_NAME` when `GITHUB_REF_TYPE=branch`
+
+If branch cannot be resolved, the action fails explicitly.
+
+## Session Defaults
+
+- `require-plan-approval` defaults to `true` when omitted.
+- `automation-mode` defaults to `AUTO_CREATE_PR` when omitted.
+
+## Authentication
+
+- The action reads the API key from `JULES_API_KEY`.
+- `JULES_API_KEY` is required and must not be blank.
 
 ## Local Verification
 
@@ -45,13 +60,3 @@ Repository-local verification commands are:
 - `pnpm run fix`
 - `pnpm run check`
 - `pnpm run test`
-
-`pnpm run fix` applies Biome formatter and safe lint updates.
-`pnpm run check` covers Biome checks and typecheck validation on source changes.
-
-Other pnpm scripts remain available:
-
-- `pnpm run test:coverage`
-- `pnpm run typecheck`
-- `pnpm run package`
-- `pnpm run clean`
