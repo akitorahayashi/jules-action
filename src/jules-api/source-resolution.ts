@@ -28,8 +28,9 @@ export async function resolveSourceName(
   client: SourceLookupClient,
   input: ResolveSourceNameInput,
 ): Promise<string> {
+  const explicitSourceName = input.explicitSourceName?.trim();
   const expectedSourceName =
-    input.explicitSourceName ??
+    explicitSourceName ||
     (input.fallbackRepository
       ? buildRepositorySourceName(input.fallbackRepository)
       : undefined);

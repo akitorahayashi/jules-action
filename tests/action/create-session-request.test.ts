@@ -102,7 +102,7 @@ describe('resolveCreateSessionActionRequest', () => {
         return 'add tests';
       }
       if (name === 'source') {
-        return 'acme/repo';
+        return 'sources/';
       }
       return '';
     });

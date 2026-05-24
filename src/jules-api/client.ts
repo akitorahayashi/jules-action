@@ -1,4 +1,8 @@
-import { julesApiVersionBaseUrl, sourcesPageSizeMaximum } from './contract';
+import {
+  julesApiRequestTimeoutMs,
+  julesApiVersionBaseUrl,
+  sourcesPageSizeMaximum,
+} from './contract';
 import type { CreateSessionPayload } from './create-session-payload';
 import { JulesApiError } from './errors';
 import {
@@ -49,15 +53,30 @@ export class JulesApiClient {
       requestUrl.search = options.query.toString();
     }
 
-    const response = await fetch(requestUrl, {
-      method: options?.method ?? 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': this.apiKey,
-      },
-      body: options?.payload ? JSON.stringify(options.payload) : undefined,
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, julesApiRequestTimeoutMs);
+
+    let response: Response;
+    try {
+      response = await fetch(requestUrl, {
+        method: options?.method ?? 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': this.apiKey,
+        },
+        body: options?.payload ? JSON.stringify(options.payload) : undefined,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown transport error.';
+      throw new JulesApiError(0, message);
+    } finally {
+      clearTimeout(timeout);
+    }
 
     const responseText = await response.text();
     if (!response.ok) {
@@ -65,9 +84,19 @@ export class JulesApiClient {
     }
 
     if (!responseText) {
-      return {};
+      throw new JulesApiError(
+        response.status,
+        'Expected a JSON response body but received an empty response.',
+      );
     }
 
-    return JSON.parse(responseText) as unknown;
+    try {
+      return JSON.parse(responseText) as unknown;
+    } catch {
+      throw new JulesApiError(
+        response.status,
+        `Failed to parse response as JSON: ${responseText}`,
+      );
+    }
   }
 }

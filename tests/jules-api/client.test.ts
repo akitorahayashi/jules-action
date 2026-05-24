@@ -76,4 +76,39 @@ describe('JulesApiClient', () => {
     const client = new JulesApiClient('api-key');
     await expect(client.listSources()).rejects.toBeInstanceOf(JulesApiError);
   });
+
+  it('throws JulesApiError when the transport layer fails', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network down'));
+
+    const client = new JulesApiClient('api-key');
+    await expect(client.listSources()).rejects.toMatchObject({
+      status: 0,
+      responseBody: 'network down',
+    });
+  });
+
+  it('throws JulesApiError when a successful response body is empty', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(null, { status: 200 }),
+    );
+
+    const client = new JulesApiClient('api-key');
+    await expect(client.listSources()).rejects.toMatchObject({
+      status: 200,
+      responseBody:
+        'Expected a JSON response body but received an empty response.',
+    });
+  });
+
+  it('throws JulesApiError when a successful response body is not valid JSON', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('not json', { status: 200 }),
+    );
+
+    const client = new JulesApiClient('api-key');
+    await expect(client.listSources()).rejects.toMatchObject({
+      status: 200,
+      responseBody: 'Failed to parse response as JSON: not json',
+    });
+  });
 });

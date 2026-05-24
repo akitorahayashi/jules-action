@@ -34,5 +34,8 @@ describe('action metadata contracts', () => {
     expect(Object.keys(action.outputs)).toContain('session-name');
     expect(Object.keys(action.outputs)).toContain('session-id');
     expect(Object.keys(action.outputs)).toContain('resolved-source');
+    expect(Object.keys(action.outputs)).toContain('session-title');
+    expect(Object.keys(action.outputs)).toContain('session-state');
+    expect(Object.keys(action.outputs)).toContain('session-url');
   });
 });

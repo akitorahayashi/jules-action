@@ -18,6 +18,7 @@ export const sessionStates = [
 ] as const;
 
 export const sessionNamePattern = /^sessions\/[^/]+$/;
-export const sourceNamePattern = /^sources\/.*$/;
+export const sourceNamePattern = /^sources\/.+$/;
 
 export const sourcesPageSizeMaximum = 100;
+export const julesApiRequestTimeoutMs = 30_000;

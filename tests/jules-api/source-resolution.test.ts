@@ -33,6 +33,23 @@ describe('resolveSourceName', () => {
     expect(sourceName).toBe('sources/github/acme/repo');
   });
 
+  it('treats an empty explicit source as absent and falls back to the repository', async () => {
+    const listSources = vi.fn().mockResolvedValue({
+      sources: [{ name: 'sources/github/acme/repo' }],
+    });
+
+    const sourceName = await resolveSourceName(
+      { listSources },
+      {
+        explicitSourceName: '   ',
+        fallbackRepository: { owner: 'acme', repo: 'repo' },
+      },
+    );
+
+    expect(listSources).toHaveBeenCalledWith('name=sources/github/acme/repo');
+    expect(sourceName).toBe('sources/github/acme/repo');
+  });
+
   it('fails when no matching source exists', async () => {
     const listSources = vi.fn().mockResolvedValue({ sources: [] });
 

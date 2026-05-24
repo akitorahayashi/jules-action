@@ -6,12 +6,18 @@ import {
   sourceNamePattern,
 } from './contract';
 
-export const automationModeSchema = z.enum(automationModes, {
-  message:
-    "Input 'automation-mode' must be one of: AUTOMATION_MODE_UNSPECIFIED, AUTO_CREATE_PR.",
+const automationModeValueSchema = z.enum(automationModes);
+
+export const automationModeInputSchema = z.enum(automationModes, {
+  error: () => ({
+    message:
+      "Input 'automation-mode' must be one of: AUTOMATION_MODE_UNSPECIFIED, AUTO_CREATE_PR.",
+  }),
 });
 
-export type AutomationMode = z.infer<typeof automationModeSchema>;
+export const automationModeSchema = automationModeValueSchema;
+
+export type AutomationMode = z.infer<typeof automationModeValueSchema>;
 
 export const sourceNameSchema = z
   .string()
@@ -19,6 +25,8 @@ export const sourceNameSchema = z
     sourceNamePattern,
     "Input 'source' must be in the form 'sources/{source}'.",
   );
+
+export type SourceName = z.infer<typeof sourceNameSchema>;
 
 const sessionNameSchema = z
   .string()

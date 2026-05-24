@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
-  automationModeSchema,
+  type AutomationMode,
+  automationModeInputSchema,
   sourceNameSchema,
 } from '../jules-api/session-contract';
 import {
@@ -17,16 +18,16 @@ const createSessionActionRequestSchema = z.object({
   startingBranch: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
   requirePlanApproval: z.boolean(),
-  automationMode: automationModeSchema,
+  automationMode: automationModeInputSchema,
 });
 
 export type CreateSessionActionRequest = z.infer<
   typeof createSessionActionRequestSchema
 >;
 
-function readOptionalAutomationMode(): string | undefined {
+function readOptionalAutomationMode(): AutomationMode | undefined {
   const automationMode = readOptionalInput('automation-mode');
-  return automationMode;
+  return automationMode as AutomationMode | undefined;
 }
 
 export function resolveCreateSessionActionRequest(): CreateSessionActionRequest {

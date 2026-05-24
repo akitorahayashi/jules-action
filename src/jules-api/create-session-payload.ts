@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
+  type AutomationMode,
   automationModeSchema,
+  type SourceName,
   sourceContextSchema,
   sourceNameSchema,
 } from './session-contract';
@@ -17,11 +19,11 @@ export type CreateSessionPayload = z.infer<typeof createSessionPayloadSchema>;
 
 export interface BuildCreateSessionPayloadInput {
   prompt: string;
-  source: string;
+  source: SourceName;
   startingBranch: string;
   title?: string;
   requirePlanApproval?: boolean;
-  automationMode?: string;
+  automationMode?: AutomationMode;
 }
 
 export function buildCreateSessionPayload(
