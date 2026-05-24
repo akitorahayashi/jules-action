@@ -1,48 +1,51 @@
-# act-tmpl
+# jules-action
 
-`act-tmpl` is a TypeScript GitHub Action template repository. It ships a minimal but complete action that renders a message from inputs and emits the rendered value as an action output.
-
-The repository demonstrates a reusable delivery foundation:
-
-- release-managed `dist/` packaging on `main`
-- split reusable workflows under `.github/workflows/`
-- `pnpm` scripts as the local task surface
-- runtime boundaries organized as `index -> action -> app -> domain`
+`jules-action` is a TypeScript GitHub Action that creates a Jules API session from workflow inputs.
 
 ## Quick Start
 
 ```yaml
-- uses: akitorahayashi/act-tmpl@v1
+- uses: akitorahayashi/jules-action@v1
+  env:
+    JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
   with:
-    message: hello world
-    prefix: greeting
-    suffix: done
-    uppercase: false
+    prompt: Refactor retry logic in the API client
 ```
 
 ## Action Contract
 
 Inputs:
 
-- `message` (required)
-- `prefix` (optional)
-- `suffix` (optional)
-- `uppercase` (optional, default: false)
+- `prompt` (required)
+- `source` (optional)
+- `starting-branch` (optional)
+- `title` (optional)
+- `require-plan-approval` (optional)
+- `automation-mode` (optional)
+
+Required environment variables:
+
+- `JULES_API_KEY`
 
 Outputs:
 
-- `rendered-message`
+- `session-name`
+- `session-id`
+- `resolved-source`
+- `session-title`
+- `session-state`
+- `session-url`
 
 ## Runtime Flow
 
-1. Read inputs from the GitHub Actions boundary.
-2. Normalize inputs into an action request.
-3. Render a final string in the app and domain boundaries.
-4. Emit `rendered-message`.
-5. Log the rendered value.
+1. Read and validate action inputs.
+2. Resolve source and branch from explicit input or workflow context.
+3. Call `sources.list` to verify the source.
+4. Call `sessions.create` with the normalized payload.
+5. Emit created session outputs.
 
 ## Documentation
 
 - [Usage](docs/usage.md)
-- [Architecture Boundary](docs/architecture/boundary.md)
+- [Architecture](docs/architecture.md)
 - [Action Inputs](docs/configuration/inputs.md)

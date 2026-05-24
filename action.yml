@@ -1,22 +1,37 @@
-name: act-tmpl
-description: Render a message from action inputs
+name: jules-action
+description: Create a Jules session from workflow inputs
 inputs:
-  message:
-    description: Base message text to render
+  prompt:
+    description: Prompt to start the Jules session
     required: true
-  prefix:
-    description: Optional prefix inserted before the message
+  source:
+    description: Source resource name in the form sources/{source}
     required: false
-  suffix:
-    description: Optional suffix appended after the message
+  starting-branch:
+    description: Branch name to start the session from; defaults to current workflow branch
     required: false
-  uppercase:
-    description: Optional flag to convert the rendered message to uppercase
+  title:
+    description: Optional session title
     required: false
-    default: false
+  require-plan-approval:
+    description: Optional boolean; true requires plan approval before execution
+    required: false
+  automation-mode:
+    description: Optional automation mode enum (AUTOMATION_MODE_UNSPECIFIED or AUTO_CREATE_PR)
+    required: false
 outputs:
-  rendered-message:
-    description: Final rendered message output
+  session-name:
+    description: Created session resource name
+  session-id:
+    description: Created session identifier
+  resolved-source:
+    description: Source used for session creation
+  session-title:
+    description: Created session title
+  session-state:
+    description: Current session state
+  session-url:
+    description: URL to view the session in Jules web app
 runs:
   using: node24
   main: dist/index.js
