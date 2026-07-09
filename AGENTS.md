@@ -9,10 +9,10 @@ The authored implementation lives under `src/`.
 
 `src/index.ts` bootstraps the action runtime.
 `src/action/` owns input reading, output emission, and request normalization.
-`src/app/` owns use-case orchestration.
-`src/jules-api/` owns API contract, source resolution, and HTTP client behavior.
+`src/app/` owns use-case orchestration and source resolution.
 `src/workflow-context/` owns repository and branch context extraction.
-`tests/action/`, `tests/app/`, `tests/jules-api/`, and `tests/workflow-context/` verify boundary behavior.
+Jules API models, validation, and transport come from the `jls` library (`github:akitorahayashi/jls-api-ts`).
+`tests/action/`, `tests/app/`, and `tests/workflow-context/` verify boundary behavior.
 `docs/` contains usage, configuration, and architecture documentation.
 `.github/workflows/` contains CI and release automation.
 

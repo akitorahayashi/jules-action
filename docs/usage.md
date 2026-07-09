@@ -1,6 +1,6 @@
 # Usage
 
-`jules-action` creates a Jules session by calling `sources.list` and `sessions.create`.
+`jules-action` creates a Jules session by calling `sources.get` and `sessions.create` through the `jls` client library.
 
 ## Standard Workflow Usage
 
@@ -31,8 +31,8 @@ This form resolves source and branch from workflow context and emits the created
 
 ## Source Resolution
 
-- When `source` is set, the action verifies it through `sources.list` and requires one exact match.
-- When `source` is omitted, the action derives `sources/github/{owner}/{repo}` from `GITHUB_REPOSITORY`, verifies it through `sources.list`, and fails when no exact match is found.
+- When `source` is set, the action verifies its existence through `sources.get`.
+- When `source` is omitted, the action derives `sources/github/{owner}/{repo}` from `GITHUB_REPOSITORY`, verifies it through `sources.get`, and fails when the source does not exist.
 
 ## Branch Resolution
 

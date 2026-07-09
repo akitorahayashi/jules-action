@@ -1,18 +1,24 @@
+import {
+  githubSourceContext,
+  prompt,
+  type Session,
+  sessionName,
+  sourceName,
+  startingBranch,
+} from 'jls';
 import { describe, expect, it, vi } from 'vitest';
 import { createJulesSession } from '../../src/app/create-jules-session';
-import type { Session } from '../../src/jules-api/session-contract';
 
 function buildSession(source: string, branch: string): Session {
   return {
-    name: 'sessions/123',
+    name: sessionName('sessions/123'),
     id: '123',
-    prompt: 'Create tests',
-    sourceContext: {
-      source,
-      githubRepoContext: {
-        startingBranch: branch,
-      },
-    },
+    prompt: prompt('Create tests'),
+    sourceContext: githubSourceContext(
+      sourceName(source),
+      startingBranch(branch),
+    ),
+    outputs: [],
   };
 }
 
@@ -21,21 +27,23 @@ describe('createJulesSession', () => {
     const createSession = vi
       .fn()
       .mockResolvedValue(buildSession('sources/github/acme/repo', 'release'));
-    const listSources = vi.fn();
-    const resolveSource = vi.fn().mockResolvedValue('sources/github/acme/repo');
+    const getSource = vi.fn();
+    const resolveSource = vi
+      .fn()
+      .mockResolvedValue(sourceName('sources/github/acme/repo'));
     const resolveBranchName = vi.fn();
 
     const session = await createJulesSession(
       {
         apiKey: 'key-123',
-        prompt: 'Create tests',
-        source: 'sources/github/acme/repo',
-        startingBranch: 'release',
+        prompt: prompt('Create tests'),
+        source: sourceName('sources/github/acme/repo'),
+        startingBranch: startingBranch('release'),
         requirePlanApproval: true,
         automationMode: 'AUTO_CREATE_PR',
       },
       {
-        createClient: () => ({ createSession, listSources }),
+        createClient: () => ({ createSession, getSource }),
         resolveRepositoryCoordinates: () => ({ owner: 'acme', repo: 'repo' }),
         resolveBranchName,
         resolveSource,
@@ -44,7 +52,7 @@ describe('createJulesSession', () => {
 
     expect(resolveBranchName).not.toHaveBeenCalled();
     expect(resolveSource).toHaveBeenCalledWith(
-      { createSession, listSources },
+      { createSession, getSource },
       {
         explicitSourceName: 'sources/github/acme/repo',
         fallbackRepository: { owner: 'acme', repo: 'repo' },
@@ -54,11 +62,13 @@ describe('createJulesSession', () => {
       prompt: 'Create tests',
       sourceContext: {
         source: 'sources/github/acme/repo',
-        githubRepoContext: {
-          startingBranch: 'release',
+        context: {
+          kind: 'githubRepoContext',
+          githubRepoContext: {
+            startingBranch: 'release',
+          },
         },
       },
-      title: undefined,
       requirePlanApproval: true,
       automationMode: 'AUTO_CREATE_PR',
     });
@@ -71,18 +81,20 @@ describe('createJulesSession', () => {
     const createSession = vi
       .fn()
       .mockResolvedValue(buildSession('sources/github/acme/repo', 'main'));
-    const listSources = vi.fn();
-    const resolveSource = vi.fn().mockResolvedValue('sources/github/acme/repo');
+    const getSource = vi.fn();
+    const resolveSource = vi
+      .fn()
+      .mockResolvedValue(sourceName('sources/github/acme/repo'));
 
     await createJulesSession(
       {
         apiKey: 'key-123',
-        prompt: 'Create tests',
+        prompt: prompt('Create tests'),
         requirePlanApproval: true,
         automationMode: 'AUTO_CREATE_PR',
       },
       {
-        createClient: () => ({ createSession, listSources }),
+        createClient: () => ({ createSession, getSource }),
         resolveRepositoryCoordinates: () => ({ owner: 'acme', repo: 'repo' }),
         resolveBranchName: () => 'main',
         resolveSource,
@@ -90,7 +102,7 @@ describe('createJulesSession', () => {
     );
 
     expect(resolveSource).toHaveBeenCalledWith(
-      { createSession, listSources },
+      { createSession, getSource },
       {
         explicitSourceName: undefined,
         fallbackRepository: { owner: 'acme', repo: 'repo' },
@@ -100,11 +112,13 @@ describe('createJulesSession', () => {
       prompt: 'Create tests',
       sourceContext: {
         source: 'sources/github/acme/repo',
-        githubRepoContext: {
-          startingBranch: 'main',
+        context: {
+          kind: 'githubRepoContext',
+          githubRepoContext: {
+            startingBranch: 'main',
+          },
         },
       },
-      title: undefined,
       requirePlanApproval: true,
       automationMode: 'AUTO_CREATE_PR',
     });

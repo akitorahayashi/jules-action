@@ -1,8 +1,17 @@
-import { z } from 'zod';
 import {
-  automationModeInputSchema,
-  sourceNameSchema,
-} from '../jules-api/session-contract';
+  AutomationMode,
+  isKnownAutomationMode,
+  type KnownAutomationMode,
+  type Prompt,
+  prompt,
+  type SourceName,
+  type StartingBranch,
+  sourceName,
+  startingBranch,
+  type Title,
+  title,
+  ValidationError,
+} from 'jls';
 import {
   readOptionalBooleanInput,
   readOptionalInput,
@@ -10,38 +19,64 @@ import {
   readRequiredInput,
 } from './inputs';
 
-const createSessionActionRequestSchema = z.object({
-  apiKey: z.string().min(1),
-  prompt: z.string().min(1),
-  source: sourceNameSchema.optional(),
-  startingBranch: z.string().min(1).optional(),
-  title: z.string().min(1).optional(),
-  requirePlanApproval: z.boolean(),
-  automationMode: automationModeInputSchema,
-});
+export interface CreateSessionActionRequest {
+  apiKey: string;
+  prompt: Prompt;
+  source?: SourceName;
+  startingBranch?: StartingBranch;
+  title?: Title;
+  requirePlanApproval: boolean;
+  automationMode: KnownAutomationMode;
+}
 
-export type CreateSessionActionRequest = z.infer<
-  typeof createSessionActionRequestSchema
->;
+function parseInput<Value>(
+  name: string,
+  rawValue: string,
+  parse: (raw: string) => Value,
+): Value {
+  try {
+    return parse(rawValue);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new Error(`Input '${name}' is invalid: ${error.message}.`);
+    }
+    throw error;
+  }
+}
 
-export function resolveCreateSessionActionRequest(): CreateSessionActionRequest {
-  const request = {
-    apiKey: readRequiredEnvironmentVariable('JULES_API_KEY'),
-    prompt: readRequiredInput('prompt'),
-    source: readOptionalInput('source'),
-    startingBranch: readOptionalInput('starting-branch'),
-    title: readOptionalInput('title'),
-    requirePlanApproval:
-      readOptionalBooleanInput('require-plan-approval') ?? true,
-    automationMode: readOptionalInput('automation-mode') ?? 'AUTO_CREATE_PR',
-  };
+function parseOptionalInput<Value>(
+  name: string,
+  parse: (raw: string) => Value,
+): Value | undefined {
+  const rawValue = readOptionalInput(name);
+  if (rawValue === undefined) {
+    return undefined;
+  }
+  return parseInput(name, rawValue, parse);
+}
 
-  const parsedRequest = createSessionActionRequestSchema.safeParse(request);
-  if (!parsedRequest.success) {
+function readAutomationModeInput(): KnownAutomationMode {
+  const value =
+    readOptionalInput('automation-mode') ?? AutomationMode.AutoCreatePr;
+  if (!isKnownAutomationMode(value)) {
     throw new Error(
-      parsedRequest.error.issues[0]?.message ?? 'Invalid inputs.',
+      `Input 'automation-mode' must be one of: ${Object.values(
+        AutomationMode,
+      ).join(', ')}.`,
     );
   }
+  return value;
+}
 
-  return parsedRequest.data;
+export function resolveCreateSessionActionRequest(): CreateSessionActionRequest {
+  return {
+    apiKey: readRequiredEnvironmentVariable('JULES_API_KEY'),
+    prompt: parseInput('prompt', readRequiredInput('prompt'), prompt),
+    source: parseOptionalInput('source', sourceName),
+    startingBranch: parseOptionalInput('starting-branch', startingBranch),
+    title: parseOptionalInput('title', title),
+    requirePlanApproval:
+      readOptionalBooleanInput('require-plan-approval') ?? true,
+    automationMode: readAutomationModeInput(),
+  };
 }
