@@ -12,8 +12,8 @@ importers:
         specifier: ^1.11.1
         version: 1.11.1
       jls:
-        specifier: github:akitorahayashi/jls-api-ts#67552cdc35ab58c3cf36d2d3845170cf21cd5b2a
-        version: https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/67552cdc35ab58c3cf36d2d3845170cf21cd5b2a
+        specifier: github:akitorahayashi/jls-api-ts#8098863985a70f5ed1c289e9ce1f7ccb7da40c23
+        version: https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/8098863985a70f5ed1c289e9ce1f7ccb7da40c23
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.5
@@ -716,8 +716,8 @@ packages:
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
-  jls@https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/67552cdc35ab58c3cf36d2d3845170cf21cd5b2a:
-    resolution: {gitHosted: true, integrity: sha512-f6t8q+NIJ+mhJK5VyneKSoDaQOpvKhOY+uFYvlN4f1rWpRPGbRrHEl8BN6cXewqQOG7tDFzYXEJE/RE9wuJjEg==, tarball: https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/67552cdc35ab58c3cf36d2d3845170cf21cd5b2a}
+  jls@https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/8098863985a70f5ed1c289e9ce1f7ccb7da40c23:
+    resolution: {gitHosted: true, integrity: sha512-JxKe6e7u1n5ToQiYqbFK+oiqkx1pogp6wzO8NNZM/7LX1OKwX7T9TpYYxr18kBnfcXcajR5A9mHeVICemVCJpQ==, tarball: https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/8098863985a70f5ed1c289e9ce1f7ccb7da40c23}
     version: 0.1.0
     engines: {node: '>=20'}
 
@@ -1579,7 +1579,7 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  jls@https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/67552cdc35ab58c3cf36d2d3845170cf21cd5b2a:
+  jls@https://codeload.github.com/akitorahayashi/jls-api-ts/tar.gz/8098863985a70f5ed1c289e9ce1f7ccb7da40c23:
     dependencies:
       zod: 4.4.3
 

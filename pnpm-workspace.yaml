@@ -6,7 +6,6 @@ packages:
 
 allowBuilds:
   esbuild: true
-  jls: true
 
 minimumReleaseAge: 4320
 minimumReleaseAgeStrict: true

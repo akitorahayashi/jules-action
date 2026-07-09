@@ -1,6 +1,6 @@
 {
   "name": "jules-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub Action that creates Jules API sessions",
   "private": true,
   "packageManager": "pnpm@11.1.3",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "jls": "github:akitorahayashi/jls-api-ts#67552cdc35ab58c3cf36d2d3845170cf21cd5b2a"
+    "jls": "github:akitorahayashi/jls-api-ts#8098863985a70f5ed1c289e9ce1f7ccb7da40c23"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.5",
