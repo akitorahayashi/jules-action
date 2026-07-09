@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "zod": "^4.4.3"
+    "jls": "github:akitorahayashi/jls-api-ts#67552cdc35ab58c3cf36d2d3845170cf21cd5b2a"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.5",

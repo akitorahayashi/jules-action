@@ -108,7 +108,24 @@ describe('resolveCreateSessionActionRequest', () => {
     });
 
     expect(() => resolveCreateSessionActionRequest()).toThrow(
-      "Input 'source' must be in the form 'sources/{source}'.",
+      "Input 'source' is invalid: source name cannot be empty.",
+    );
+  });
+
+  it('fails when automation-mode is not a known mode', () => {
+    process.env.JULES_API_KEY = 'key-123';
+    mockedGetInput.mockImplementation((name: string) => {
+      if (name === 'prompt') {
+        return 'add tests';
+      }
+      if (name === 'automation-mode') {
+        return 'ALWAYS';
+      }
+      return '';
+    });
+
+    expect(() => resolveCreateSessionActionRequest()).toThrow(
+      "Input 'automation-mode' must be one of: AUTOMATION_MODE_UNSPECIFIED, AUTO_CREATE_PR.",
     );
   });
 });
